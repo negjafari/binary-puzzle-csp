@@ -1,33 +1,16 @@
 import java.util.ArrayList;
 
-public class Binairo {
-    private final ArrayList<ArrayList<String>> board;
-    private final ArrayList<ArrayList<ArrayList<String>>> domain;
-    private final int n;
 
-    public Binairo(ArrayList<ArrayList<String>> board,
-                   ArrayList<ArrayList<ArrayList<String>>> domain,
-                   int n) {
-        this.board = board;
-        this.domain = domain;
+public class Rules {
+
+    public int n;
+
+    public Rules(int n){
         this.n = n;
     }
-
-    public void start() {
-        long tStart = System.nanoTime();
-        State state = new State(board, domain);
-        
-        drawLine();
-        System.out.println("Initial Board: \n");
-        state.printBoard();
-        drawLine();
-
-        // backtrack(state);
-        long tEnd = System.nanoTime();
-        System.out.println("Total time: " + (tEnd - tStart)/1000000000.000000000);
-    }
     
-    private boolean checkNumberOfCircles(State state) {
+    // rule 1
+    public boolean checkNumberOfCircles(State state) {
         ArrayList<ArrayList<String>> cBoard = state.getBoard();
         //row
         for (int i = 0; i < n; i++) {
@@ -62,7 +45,8 @@ public class Binairo {
         return true;
     }
     
-    private boolean checkAdjacency(State state) {
+    // rule 2
+    public boolean checkAdjacency(State state) {
         ArrayList<ArrayList<String>> cBoard = state.getBoard();
 
         //Horizontal
@@ -92,7 +76,8 @@ public class Binairo {
         return true;
     }
     
-    private boolean checkIfUnique (State state) {
+    // rule 3
+    public boolean checkIfUnique (State state) {
         ArrayList<ArrayList<String>> cBoard = state.getBoard();
         
         //check if two rows are duplicated
@@ -130,7 +115,7 @@ public class Binairo {
         return true;
     }
     
-    private boolean allAssigned(State state) {
+    public boolean allAssigned(State state) {
         ArrayList<ArrayList<String>> cBoard = state.getBoard();
 
         for (int i = 0; i < n; i++) {
@@ -144,18 +129,12 @@ public class Binairo {
     }
         
 
-    private boolean isFinished(State state) {
+    public boolean isFinished(State state) {
         return allAssigned(state) && checkAdjacency(state) && checkNumberOfCircles(state) && checkIfUnique(state);
     }
 
-    private boolean isConsistent(State state) {
+    public boolean isConsistent(State state) {
         return checkNumberOfCircles(state) && checkAdjacency(state) && checkIfUnique(state);
     }
-
-    private void drawLine() {
-        for (int i = 0; i < n*2; i++) {
-            System.out.print("\u23E4\u23E4");
-        }
-        System.out.println();
-    }
+    
 }

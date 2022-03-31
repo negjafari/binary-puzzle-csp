@@ -78,6 +78,29 @@ public class State {
         return res;
     }
 
+    public ArrayList<ArrayList<ArrayList<String>>> copyCurrentDomain() {
+        ArrayList<ArrayList<ArrayList<String>>> res = new ArrayList<>();
+        for (int i = 0; i < n; i++) {
+            ArrayList<ArrayList<String>> row = new ArrayList<>();
+            for (int j = 0; j < n; j++) {
+                row.add(new ArrayList<>(Arrays.asList("", "")));
+            }
+            res.add(row);
+        }
+
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                for (int k = 0; k < this.domain.get(i).get(j).size(); k++) {
+                    res.get(i).get(j).set(k, this.domain.get(i).get(j).get(k));
+                }
+            }
+        }
+
+        return res;
+    }
+
+
+
     public void printBoard() {
         for (ArrayList<String> strings : this.getBoard()) {
             for (String s : strings) {
@@ -92,6 +115,14 @@ public class State {
             System.out.println("\n");
         }
     }
+
+    
+
+    public int getBoardSize() {
+        return n;
+    }
+
+
 
     public void printDomain() {
         for (ArrayList<ArrayList<String>> strings : this.getDomain()) {
