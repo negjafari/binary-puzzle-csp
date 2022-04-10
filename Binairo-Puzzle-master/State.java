@@ -99,6 +99,36 @@ public class State {
         return res;
     }
 
+    public ArrayList<ArrayList<String>> getRow(int index){
+        ArrayList<ArrayList<String>> row = domain.get(index);
+        return row;
+    }
+
+    public ArrayList<ArrayList<String>> getColumn(int index) {
+        ArrayList<ArrayList<String>> column = new ArrayList<>();
+        for(int i=0 ; i<n ; i++){
+            ArrayList<String> firstElement = getRow(i).get(index);
+            System.out.println(firstElement);
+            column.add(firstElement);
+        }
+        return column;
+    }
+
+    public int getValueNumberInSeries(ArrayList<ArrayList<String>> series, String value) {
+        int n = series.size();
+        int count = 0;
+        for(int i=0 ; i<n ; i++){
+            ArrayList<String> domain = series.get(i);
+            for(int j=0; j<domain.size() ; j++){
+                if (domain.get(j).equals(value)){
+                    count++;
+                }
+            }
+        }
+        return count;
+
+    }
+
 
 
     public void printBoard() {

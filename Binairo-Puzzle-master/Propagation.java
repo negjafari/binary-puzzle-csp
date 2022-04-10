@@ -6,14 +6,15 @@ public class Propagation {
     public boolean forwardChecking(State state) {
         boolean check = true;
         int n = state.getBoardSize();
-
         ArrayList<ArrayList<ArrayList<String>>> domainCopy = state.copyCurrentDomain();
+
+
         for (int i=0 ; i<n ; i++) {
             for (int j=0 ; j<n ; j++) {
                 int x;
                 int y;
                 ArrayList<String> nodeDomain = domainCopy.get(i).get(j);
-                if(hasVariable(nodeDomain)){
+                if(!hasVariable(nodeDomain)){
                     x = i;
                     y = j;
                     

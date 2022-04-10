@@ -35,6 +35,8 @@ public class CSP {
             return;
         }
 
+        //first implemention no heuristic 
+
         boolean h_result = heuristic.MVR(state, "");
         if(!h_result) {
             //here we should go to parent node
