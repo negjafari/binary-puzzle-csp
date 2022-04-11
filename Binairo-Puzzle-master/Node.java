@@ -7,6 +7,7 @@ public class Node {
     public Node(Node parent){
         this.parent = parent;
     }
+    
 
     public Node getParent(){
         return this.parent;

@@ -49,21 +49,11 @@ public class Main {
                 
             } //Board and Domain initialized
             Binairo binairo = new Binairo(board, domain, n);
-            State state = new State(board, domain);
-            System.out.println("domain");
-            System.out.println(domain);
-            System.out.println("row");
-            System.out.println(state.getRow(1));
-            System.out.println("column");
-            state.getColumn(1);
+            binairo.start();
 
-        
-
-            // System.out.println(domain);
-            // System.out.println();
-            // System.out.println(board);
-            // binairo.start();
             reader.close();
+
+
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }

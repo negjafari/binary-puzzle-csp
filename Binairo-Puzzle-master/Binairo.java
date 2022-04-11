@@ -22,10 +22,10 @@ public class Binairo {
         state.printBoard();
         drawLine();
 
-        // backtrack(state);
-        Rules gameRules = new Rules(n);
-        CSP csp = new CSP(gameRules);
-        // csp.backtracking(state);
+        CSP csp = new CSP();
+        csp.csp(state);
+
+
 
         
         long tEnd = System.nanoTime();

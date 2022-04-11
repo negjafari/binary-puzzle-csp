@@ -1,32 +1,52 @@
 import java.util.ArrayList;
 
 public class Propagation {
+
+    private Rules rules;
+
+    public Propagation(){
+        rules = new Rules();
+    }
     
 
-    public boolean forwardChecking(State state) {
-        boolean check = true;
+    public Pair forwardChecking(State state) {
+        Pair pair = new Pair(true, null);
         int n = state.getBoardSize();
         ArrayList<ArrayList<ArrayList<String>>> domainCopy = state.copyCurrentDomain();
 
 
         for (int i=0 ; i<n ; i++) {
             for (int j=0 ; j<n ; j++) {
+
                 int x;
                 int y;
                 ArrayList<String> nodeDomain = domainCopy.get(i).get(j);
                 if(!hasVariable(nodeDomain)){
                     x = i;
                     y = j;
-                    
+                    pair = rules.updateVariableDomain(domainCopy, x, y);
+                    if(pair.flag()) {
+                        domainCopy = pair.domain();
+                    }
+                    else{
+                        break;
+                    }
                 }
-
-                
             }
+            if (!pair.flag()) break;
         }
 
-        return false;
+        if (pair.flag()) {
+            return new Pair(true, domainCopy);
+        }
+        else{
+            return new Pair(false, null);
+        }
 
     }
+
+
+
 
     public boolean hasVariable(ArrayList<String> domain) {
 

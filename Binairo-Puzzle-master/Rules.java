@@ -6,14 +6,15 @@ import java.util.*;
 
 public class Rules {
 
-    public int n;
+    // public int n;
 
-    public Rules(int n){
-        this.n = n;
+    public Rules(){
+        
     }
     
     // rule 1
     public boolean checkNumberOfCircles(State state) {
+        int n = state.getBoardSize();
         ArrayList<ArrayList<String>> cBoard = state.getBoard();
         //row
         for (int i = 0; i < n; i++) {
@@ -50,6 +51,7 @@ public class Rules {
     
     // rule 2
     public boolean checkAdjacency(State state) {
+        int n = state.getBoardSize();
         ArrayList<ArrayList<String>> cBoard = state.getBoard();
 
         //Horizontal
@@ -82,7 +84,8 @@ public class Rules {
     // rule 3
     public boolean checkIfUnique (State state) {
         ArrayList<ArrayList<String>> cBoard = state.getBoard();
-        
+        int n = state.getBoardSize();
+
         //check if two rows are duplicated
         for (int i = 0; i < n-1; i++) {
             for (int j = i+1; j < n; j++) {
@@ -119,6 +122,7 @@ public class Rules {
     
     public boolean allAssigned(State state) {
         ArrayList<ArrayList<String>> cBoard = state.getBoard();
+        int n = state.getBoardSize();
 
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
@@ -140,49 +144,49 @@ public class Rules {
     }
 
     
-    public boolean updateVariableDomainRule1(State state, int x, int y){
+    public Pair updateVariableDomainRule1(ArrayList<ArrayList<ArrayList<String>>> domain, int x, int y){
         //white 0 , black 1
 
-        ArrayList<ArrayList<ArrayList<String>>> domainsCopy = state.copyCurrentDomain();
-        ArrayList<String> currentNodeDomain = domainsCopy.get(x).get(y);
-        ArrayList<ArrayList<String>> row = state.getRow(x);
-        ArrayList<ArrayList<String>> column = state.getColumn(y);
+        // ArrayList<ArrayList<ArrayList<String>>> domainsCopy = copyDomain(domain);
+        ArrayList<String> currentNodeDomain = domain.get(x).get(y);
+        ArrayList<ArrayList<String>> row = getRow(domain, x);
+        ArrayList<ArrayList<String>> column = getColumn(domain, y);
 
-        int whiteInRow = state.getValueNumberInSeries(row, "W");
-        int blackInRow = state.getValueNumberInSeries(row, "B");
-        int whiteInColumn = state.getValueNumberInSeries(column, "W");
-        int blackInColumn = state.getValueNumberInSeries(column, "B");
+        int whiteInRow = getValueNumberInSeries(row, "W");
+        int blackInRow = getValueNumberInSeries(row, "B");
+        int whiteInColumn = getValueNumberInSeries(column, "W");
+        int blackInColumn = getValueNumberInSeries(column, "B");
 
 
         if (whiteInRow > (row.size()/2) || blackInRow > (row.size()/2) ||
             whiteInColumn > (column.size()/2) || blackInColumn > (column.size()/2)) {
-                return false;
+                return new Pair(null, false);
         }
 
         if (whiteInRow == (row.size()/2) && currentNodeDomain.contains("w")){
-            domainsCopy.get(x).get(y).remove("w");
+            currentNodeDomain.remove("w");
         }
 
         if (blackInRow == (row.size()/2) && currentNodeDomain.contains("b")){
-            domainsCopy.get(x).get(y).remove("b");
+            currentNodeDomain.remove("b");
         }
 
         if (whiteInColumn == (column.size()/2) && currentNodeDomain.contains("w")){
-            domainsCopy.get(x).get(y).remove("w");
+            currentNodeDomain.remove("w");
         }
 
         if (blackInColumn == (column.size()/2) && currentNodeDomain.contains("b")){
-            domainsCopy.get(x).get(y).remove("b");
+            currentNodeDomain.remove("b");
         }
 
-        return true;
+        return new Pair(currentNodeDomain, true);
 
     }
 
 
-    public boolean updateVariableDomainRule3(State state){
-        int n = state.getBoardSize();
-        ArrayList<ArrayList<ArrayList<String>>> domainsCopy = state.copyCurrentDomain();
+    public boolean updateVariableDomainRule3(ArrayList<ArrayList<ArrayList<String>>> domain){
+        int n = domain.size();
+        ArrayList<ArrayList<ArrayList<String>>> domainsCopy = copyDomain(domain);
         Set<String> rows = new HashSet<String>();
         Set<String> columns = new HashSet<String>();
 
@@ -190,9 +194,9 @@ public class Rules {
         //check row
         for(int i=0 ; i<n ; i++){
             String stringRow = "";
-            ArrayList<ArrayList<String>> row = state.getRow(i);
-            int whiteInRow = state.getValueNumberInSeries(row, "W");
-            int blackInRow = state.getValueNumberInSeries(row, "B");
+            ArrayList<ArrayList<String>> row = getRow(domain, i);
+            int whiteInRow = getValueNumberInSeries(row, "W");
+            int blackInRow = getValueNumberInSeries(row, "B");
             if (whiteInRow + blackInRow == n){
                 stringRow = makeStringSeries(row);
                 rows.add(stringRow);
@@ -202,9 +206,9 @@ public class Rules {
         //check column
         for(int i=0 ; i<n ; i++){
             String stringColumn = "";
-            ArrayList<ArrayList<String>> column = state.getColumn(i);
-            int whiteInColumn = state.getValueNumberInSeries(column, "W");
-            int blackInColumn = state.getValueNumberInSeries(column, "B");
+            ArrayList<ArrayList<String>> column = getColumn(domain, i);
+            int whiteInColumn = getValueNumberInSeries(column, "W");
+            int blackInColumn = getValueNumberInSeries(column, "B");
             if (whiteInColumn + blackInColumn == n){
                 stringColumn = makeStringSeries(column);
                 columns.add(stringColumn);
@@ -220,10 +224,10 @@ public class Rules {
     }
 
 
-    public boolean updateVariableDomainRule2(State state, int x, int y){
-        ArrayList<ArrayList<ArrayList<String>>> domainsCopy = state.copyCurrentDomain();
-        ArrayList<ArrayList<String>> currentRow = state.getRow(x);
-        ArrayList<ArrayList<String>> currentColumn = state.getColumn(y);
+    public ArrayList<String> updateVariableDomainRule2(ArrayList<ArrayList<ArrayList<String>>> domain, int x, int y){
+        ArrayList<ArrayList<ArrayList<String>>> domainsCopy = copyDomain(domain);
+        ArrayList<ArrayList<String>> currentRow = getRow(domain, x);
+        ArrayList<ArrayList<String>> currentColumn = getColumn(domain, y);
 
         ArrayList<String> currentNodeDomain = domainsCopy.get(x).get(y);
 
@@ -234,7 +238,9 @@ public class Rules {
         checkDuplication(x, currentColumn, currentNodeDomain);
 
 
-        return true;
+        return currentNodeDomain;
+
+
     }
 
 
@@ -295,20 +301,86 @@ public class Rules {
     }
 
 
-    public void updateVariableDomain(State state, int x, int y) {
-        boolean flag = true;
+    public Pair updateVariableDomain(ArrayList<ArrayList<ArrayList<String>>> domain, int x, int y) {
+        
+        ArrayList<ArrayList<ArrayList<String>>> domainCopy = copyDomain(domain);
+        boolean flag;
 
-        flag = updateVariableDomainRule1(state, x, y);
-    
-    
-        // # check rule 1 -> tedad barabar 0,1
-        // flag, new_domain = check_variables_domain_with_rule1(variables_domain_copy, variable_index)
-        // # print("after check rule 1 ", new_domain)
-        // if not flag:
-        //     print("!!! Breaking the rule 1 !!!")
-        //     return False, []
-    
-        // variables_domain_copy[x][y] = new_domain
+        Pair rule1 = updateVariableDomainRule1(domainCopy, x, y);
+        if (!rule1.flag()){
+            return new Pair(false, null);
+        }
+
+        domainCopy.get(x).set(y, rule1.getVariableDomain());
+        
+
+        flag = updateVariableDomainRule3(domainCopy);
+        if(!flag) {
+            return new Pair(false, null);
+        }
+
+        ArrayList<String> rule3 = updateVariableDomainRule2(domainCopy, x, y);
+        if (rule3.size() == 0) {
+            return new Pair(flag, null);
+        }
+        domainCopy.get(x).set(y, rule3);
+        
+
+        return new Pair(true, domainCopy);
+        
+
+    }
+
+    public ArrayList<ArrayList<ArrayList<String>>> copyDomain(ArrayList<ArrayList<ArrayList<String>>> currentDomain) {
+        ArrayList<ArrayList<ArrayList<String>>> res = new ArrayList<>();
+        int n = currentDomain.size();
+        for (int i = 0; i < n; i++) {
+            ArrayList<ArrayList<String>> row = new ArrayList<>();
+            for (int j = 0; j < n; j++) {
+                row.add(new ArrayList<>(Arrays.asList("", "")));
+            }
+            res.add(row);
+        }
+
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                for (int k = 0; k < currentDomain.get(i).get(j).size(); k++) {
+                    res.get(i).get(j).set(k, currentDomain.get(i).get(j).get(k));
+                }
+            }
+        }
+
+        return res;
+    }
+
+
+    public ArrayList<ArrayList<String>> getRow(ArrayList<ArrayList<ArrayList<String>>> domain, int index){
+        ArrayList<ArrayList<String>> row = domain.get(index);
+        return row;
+    }
+
+    public ArrayList<ArrayList<String>> getColumn(ArrayList<ArrayList<ArrayList<String>>> domain, int index) {
+        ArrayList<ArrayList<String>> column = new ArrayList<>();
+        int n = domain.size();
+        for(int i=0 ; i<n ; i++){
+            ArrayList<String> firstElement = getRow(domain ,i).get(index);
+            column.add(firstElement);
+        }
+        return column;
+    }
+
+    public int getValueNumberInSeries(ArrayList<ArrayList<String>> series, String value) {
+        int n = series.size();
+        int count = 0;
+        for(int i=0 ; i<n ; i++){
+            ArrayList<String> domain = series.get(i);
+            for(int j=0; j<domain.size() ; j++){
+                if (domain.get(j).equals(value)){
+                    count++;
+                }
+            }
+        }
+        return count;
 
     }
 

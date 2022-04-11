@@ -1,69 +1,50 @@
 import java.util.ArrayList;
 
-    // E E W E E W E E
-    // E B E E B W E B
-    // E E E W E E E B
-    // E E E E E W E E 
-    // E E W E W E E B
-    // E E W E E B E B
-    // E E E W E E E E
-    // E E E E E E W E
-
 
 public class CSP {
-    Rules rules;
-    Heuristic heuristic;
+    private Rules rules;
+    private Heuristic heuristic;
+    private Propagation propagation;
 
 
-    public CSP(Rules gamRules) {
-        this.rules = gamRules;
+    public CSP() {
+        this.rules = new Rules();
         this.heuristic = new Heuristic();
+        this.propagation = new Propagation();
     }
 
+
+
     public void csp(State state) {
-        Node base = new Node(null);
-        Node start = new Node(base);
+        Node start = new Node(new Node(null));
         backtracking(state, start);
 
     }
 
     public void backtracking(State state, Node node) {
 
-        boolean finished = this.rules.isFinished(state);
+
+        boolean finished = rules.isFinished(state);
         if (finished) {
             System.out.println("puzzle solved");
             return;
         }
 
-        //first implemention no heuristic 
+        Pair pair = propagation.forwardChecking(state);
 
-        boolean h_result = heuristic.MVR(state, "");
-        if(!h_result) {
-            //here we should go to parent node
-            System.out.println("backtracking");
-            backtracking(state, node.getParent());
+        if (pair.flag()) {
+            Node child = new Node(node);
+            backtracking(state, child);
         }
+
+        // + variable domain checking
+        else if(!pair.flag()) {
+            backtracking(state, node.getParent());   
+        }
+
         else {
-            //create a copy of domain and board
-            State newState = state.copy();
-            int x = node.getX();
-            int y = node.getY();
-            newState.getDomain().get(x).get(y).add(node.getValue());
-            newState.setIndexBoard(x, y, node.getValue());
-            System.out.println("assign variable " + x + "," + y + " to " + node.getValue());
-            newState.printBoard();
-            System.out.println("----------------------------------------------");
-            
-        }
-
-
-
-
-
-
-
-
-        
+            backtracking(state, node);
+        }        
     }
 
 }
