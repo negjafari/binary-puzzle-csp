@@ -331,6 +331,23 @@ public class Rules {
 
     }
 
+
+    public ArrayList<ArrayList<String>> copyBoard(ArrayList<ArrayList<String>> cBoard) {
+        ArrayList<ArrayList<String>> res = new ArrayList<>();
+        int n = cBoard.size();
+        for (int i = 0; i < n; i++) {
+            res.add(new ArrayList<>(Arrays.asList(new String[n])));
+        }
+
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                res.get(i).set(j, cBoard.get(i).get(j));
+            }
+        }
+
+        return res;
+    }
+
     public ArrayList<ArrayList<ArrayList<String>>> copyDomain(ArrayList<ArrayList<ArrayList<String>>> currentDomain) {
         ArrayList<ArrayList<ArrayList<String>>> res = new ArrayList<>();
         int n = currentDomain.size();

@@ -9,10 +9,10 @@ public class Propagation {
     }
     
 
-    public Pair forwardChecking(State state) {
+    public Pair forwardChecking(ArrayList<ArrayList<ArrayList<String>>> domain) {
         Pair pair = new Pair(true, null);
-        int n = state.getBoardSize();
-        ArrayList<ArrayList<ArrayList<String>>> domainCopy = state.copyCurrentDomain();
+        int n = domain.size();
+        ArrayList<ArrayList<ArrayList<String>>> domainCopy = rules.copyDomain(domain);
 
 
         for (int i=0 ; i<n ; i++) {

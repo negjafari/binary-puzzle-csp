@@ -22,8 +22,8 @@ public class Binairo {
         state.printBoard();
         drawLine();
 
-        CSP csp = new CSP();
-        csp.csp(state);
+        CSP csp = new CSP(new State(board, domain));
+        csp.csp();
 
 
 
