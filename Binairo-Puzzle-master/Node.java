@@ -63,10 +63,18 @@ public class Node {
         this.state = state;
     }
 
-    
 
-    
-
-
-    
+    @Override
+    public String toString() {
+        if (this.state != null) {
+            return "Node1{" +
+                    "x=" + x +
+                    ", y=" + y +
+                    '}';
+        }
+        return "Node0{" +
+                "x=" + x +
+                ", y=" + y +
+                '}';
+    }
 }

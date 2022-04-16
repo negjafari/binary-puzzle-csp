@@ -19,8 +19,8 @@ public class Heuristic {
         int n = this.board.size();
         for (int i=0 ; i<n ; i++){
             for (int j=0 ; j<n ; j++) {
-                int size = this.domain.get(i).get(j).size();
-                if (this.board.get(i).get(j).equals("E") && size <= min) {
+                int size = node.getState().getDomain().get(i).get(j).size();
+                if (node.getState().getBoard().get(i).get(j).equals("E") && size <= min) {
                     min = size;
                     x = i;
                     y = j;
@@ -36,13 +36,12 @@ public class Heuristic {
         int x = node.getX();
         int y = node.getY();
 
-        ArrayList<String> nodeDomain = domain.get(x).get(y);
 
-        if(nodeDomain.size() == 0){
+        if(node.getState().getDomain().get(x).get(y).size() == 0){
             return "0";
         }
         else {
-            return nodeDomain.remove(0);
+            return node.getState().getDomain().get(x).get(y).remove(0);
         }
 
     }
@@ -53,18 +52,18 @@ public class Heuristic {
         }
         else {
             Node minNode = minDomain(node);
-          
-            if (minNode.getX() == -1) {
+            node.setPostiton(minNode.getX(), minNode.getY());
+            if (node.getX() == -1) {
                 return false;
-            }
-            else {
-                node.setPostiton(minNode.getX(), minNode.getY());
-               
             }
         }
 
+
         String value = assignValue(node);
-        
+        node.setValue(value);
+
+
+
         if (!value.equals("0")){
             node.setValue(value);
             return true;

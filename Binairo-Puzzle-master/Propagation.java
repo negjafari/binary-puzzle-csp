@@ -5,7 +5,7 @@ public class Propagation {
     private Rules rules;
 
     public Propagation(){
-        rules = new Rules();
+        this.rules = new Rules();
     }
     
 
@@ -50,8 +50,8 @@ public class Propagation {
 
     public boolean hasVariable(ArrayList<String> domain) {
 
-        for(int i=0 ; i<domain.size() ; i++){
-            if(domain.get(i).equals("w") || domain.get(i).equals("b")){
+        for (String s : domain) {
+            if (s.equals("w") || s.equals("b")) {
                 return true;
             }
         }

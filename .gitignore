@@ -3,6 +3,11 @@
 # Edit at https://www.toptal.com/developers/gitignore?templates=python
 
 test.java
+input1.txt
+input2.txt
+input3.txt
+input4.txt
+input5.txt
 
 ### Python ###
 # Byte-compiled / optimized / DLL files
