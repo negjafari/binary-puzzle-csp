@@ -27,6 +27,7 @@ public class CSP {
 
     public void backtracking(Node node, String mode) {
         printB(node.getState().getBoard());
+        System.out.println();
 
         if (!IsSolvable(node)) {
             return;
@@ -38,6 +39,8 @@ public class CSP {
             System.out.println("puzzle solved");
             return;
         }
+
+
 
 
         boolean empty = heuristic.MVR(node, mode);
@@ -63,8 +66,10 @@ public class CSP {
 
 
             Pair pair = propagation.forwardChecking(domainCopy);
+//            Pair pair = propagation.AC3(domainCopy, new Node(x,y));
 
-            ArrayList<String> varDomain = node.getState().getDomain().get(node.getX()).get(node.getY());
+//            ArrayList<String> varDomain = node.getState().getDomain().get(node.getX()).get(node.getY());
+
 
 
             if (pair.flag()) {
@@ -75,7 +80,7 @@ public class CSP {
 
 
 
-            else if(!pair.flag() && (varDomain.size() == 0)) {
+            else if(!pair.flag() && (pair.isDomainNull())) {
                 backtracking(node.getParent(), "backtracking");
             }
 

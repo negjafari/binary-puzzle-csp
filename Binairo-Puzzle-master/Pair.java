@@ -3,6 +3,7 @@ import java.util.ArrayList;
 
 public class Pair {
     private boolean flag;
+    private boolean IsDomainNull;
     private ArrayList<ArrayList<ArrayList<String>>> domain;
     private ArrayList<String> variableDomain;
 
@@ -18,7 +19,18 @@ public class Pair {
         this.variableDomain = variableDomain;
     }
 
-    
+    public Pair(boolean flag, boolean isDomainNull) {
+        this.flag = flag;
+        IsDomainNull = isDomainNull;
+    }
+
+    public Pair(boolean flag) {
+        this.flag = flag;
+    }
+
+    public boolean isDomainNull() {
+        return IsDomainNull;
+    }
 
     public ArrayList<String> getVariableDomain() {
         return variableDomain;

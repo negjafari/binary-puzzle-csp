@@ -136,8 +136,7 @@ public class Rules {
         
 
     public boolean isFinished(State state) {
-        return allAssigned(state) && checkNumberOfCircles(state) && checkIfUnique(state);
-//        return allAssigned(state) && checkNumberOfCircles(state) && checkIfUnique(state);
+        return allAssigned(state) && checkNumberOfCircles(state) && checkIfUnique(state) && checkAdjacency2(state);
     }
 
     public boolean isConsistent(State state) {
@@ -257,20 +256,56 @@ public class Rules {
     }
 
 
-//    def check_variables_domain_with_rule3(variables_domain, variable_index):
-//    x, y = variable_index[0], variable_index[1]
-//    domain = variables_domain[x][y]
-//            # print("first domain ", domain)
 //
-//    # check in row
-//            row = variables_domain[x]
-//    new_domain = check_variables_domain_duplicate_digit(row, y, domain)
+//    # check columns
+//    for i in range(len(board)):
+//    column = get_column_from_array(board, i)
+//        if not check_duplicate_digit(column):
+//            return False
 //
-//    # check in column
-//            column = get_column_from_array(variables_domain, y)
-//    new_domain = check_variables_domain_duplicate_digit(column, x, new_domain)
-//
-//    return new_domain
+//    return True
+
+
+
+
+    public boolean duplication(ArrayList<String> sequence){
+        for(int i = 0 ; i < sequence.size()-2 ; i++){
+            String ele1 = sequence.get(i);
+            String ele2 = sequence.get(i+1);
+            String ele3 = sequence.get(i+2);
+            if(ele1.equals(ele2) && ele2.equals(ele3)) {
+                if(!ele1.equals("E")){
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    public boolean checkAdjacency2(State state){
+        ArrayList<ArrayList<String>> board = state.getBoard();
+        int n = board.size();
+
+
+        //row
+        for(int i=0 ; i<n ; i++){
+            ArrayList<String> row = getBRow(board, i);
+            if (!duplication(row)){
+                return false;
+            }
+        }
+
+        //column
+        for(int i=0 ; i<n ; i++){
+            ArrayList<String> row = getBColumn(board, i);
+            if (!duplication(row)){
+                return false;
+            }
+        }
+
+        return true;
+    }
+
 
 
     public ArrayList<String> updateVariableDomainRule2(ArrayList<ArrayList<ArrayList<String>>> domain, int x, int y){
@@ -279,33 +314,57 @@ public class Rules {
         ArrayList<ArrayList<String>> currentColumn = getColumn(domain, y);
         ArrayList<String> currentNodeDomain = domainsCopy.get(x).get(y);
 
+
+
         //check row
-        System.out.println("currentRow = " + currentRow);
+
         ArrayList<String> checkedRow = checkDuplication(y, currentRow, currentNodeDomain);
 
         //check column
-        System.out.println("currentColumn = " + currentColumn);
-        ArrayList<String> checkedColumn = checkDuplication(x, currentColumn, checkedRow);
+        if(!isEmpty(checkedRow)){
+            ArrayList<String> checkedColumn = checkDuplication(x, currentColumn, checkedRow);
+            return  checkedColumn;
+        }
 
 
-        return checkedColumn;
+//        System.out.println(checkedColumn + " size : " + isEmpty(checkedColumn));
+        return checkedRow;
 
 
+    }
+
+    public boolean isEmpty(ArrayList<String> list){
+        for (String s : list) {
+            if (s.equals("w") || s.equals("b") || s.equals("W") || s.equals("B")) {
+                return false;
+            }
+        }
+        return true;
     }
 
 
     public ArrayList<String> checkDuplication(int index, ArrayList<ArrayList<String>> series, ArrayList<String> currentNodeDomain){
         ArrayList<String> newDomain = currentNodeDomain;
 
+        // 2 ta ghabl
         if (index >= 2) {
             ArrayList<String> list1 = series.get(index-1);
             String element1 = list1.get(0);
             ArrayList<String> list2 = series.get(index-2);
             String element2 = list2.get(0);
-            if ((element1.equals(element2) && isValidToChange(element1)) && (currentNodeDomain.contains(element1.toLowerCase()))){
 
-                newDomain.remove(index-1);
+            if ((element1.equals(element2) && isFixed(element1)) && (currentNodeDomain.contains(element1.toLowerCase()))){
+//                public void removeIndexDomain(int x, int y, String value) {
+//                    domain.get(x).get(y).remove(value);
+//                }
+//                newDomain.remove(index-1);
+//                System.out.println("before " + newDomain);
+                int toRemove = removeFromDomain(newDomain, element1.toLowerCase());
+                if(!isFixed(element1.toLowerCase())){
+                    newDomain.remove(toRemove);
+                }
 
+//                System.out.println("after " + newDomain);
             }
 
         }
@@ -315,8 +374,14 @@ public class Rules {
             String element1 = list1.get(0);
             ArrayList<String> list2 = series.get(index+1);
             String element2 = list2.get(0);
-            if ((element1.equals(element2) && isValidToChange(element1)) && (currentNodeDomain.contains(element1.toLowerCase()))) {
-                newDomain.remove(index-1);
+            if ((element1.equals(element2) && isFixed(element1)) && (newDomain.contains(element1.toLowerCase()))) {
+//                newDomain.remove(index-1);
+                //newDomain = removeFromDomain(newDomain, element1);
+                int toRemove = removeFromDomain(newDomain, element1.toLowerCase());
+                if(!isFixed(element1.toLowerCase())){
+                    newDomain.remove(toRemove);
+                }
+
             }
         }
 
@@ -326,16 +391,31 @@ public class Rules {
             String element1 = list1.get(0);
             ArrayList<String> list2 = series.get(index+2);
             String element2 = list2.get(0);
-            if ((element1.equals(element2) && isValidToChange(element1)) && (currentNodeDomain.contains(element1.toLowerCase()))) {
-                newDomain.remove(index+1);
+            if ((element1.equals(element2) && isFixed(element1)) && (newDomain.contains(element1.toLowerCase()))) {
+//                newDomain.remove(index+1);
+               // newDomain = removeFromDomain(newDomain, element1);
+                int toRemove = removeFromDomain(newDomain, element1.toLowerCase());
+                if(!isFixed(element1.toLowerCase())){
+                    newDomain.remove(toRemove);
+                }
+
             }
         }
 
         return newDomain;
     }
 
+    public int removeFromDomain(ArrayList<String> list, String value){
+        int index = -1;
+        for(int i = 0 ; i <list.size() ; i++){
+            if (list.get(i).equals(value)){
+                index = i;
+            }
+        }
+        return index;
+    }
 
-    public boolean isValidToChange(String value) {
+    public boolean isFixed(String value) {
         if (value.equals("W") || value.equals("B")){
             return true;
         }
@@ -359,33 +439,53 @@ public class Rules {
     public Pair updateVariableDomain(ArrayList<ArrayList<ArrayList<String>>> domain, int x, int y) {
         
         ArrayList<ArrayList<ArrayList<String>>> domainCopy = copyDomain(domain);
+        ArrayList<String> nodeDomain = domainCopy.get(x).get(y);
+        boolean isFixed = hasVariable(nodeDomain);
 
-        Pair rule1 = updateVariableDomainRule1(domainCopy, x, y);
-        if (!rule1.flag()){
-            return new Pair(false, null);
+        if(!isFixed){
+            Pair rule1 = updateVariableDomainRule1(domainCopy, x, y);
+            if (!rule1.flag()){
+                return new Pair(false, true);
+//                return new Pair(false, null);
+            }
+
+            domainCopy.get(x).set(y, rule1.getVariableDomain());
         }
 
-        domainCopy.get(x).set(y, rule1.getVariableDomain());
-        
 
-        boolean rule2 = updateVariableDomainRule3(domainCopy);
-        if(!rule2) {
-            return new Pair(false, null);
+        if (!isFixed){
+            boolean rule2 = updateVariableDomainRule3(domainCopy);
+            if(!rule2) {
+                return new Pair(false, true);
+//                return new Pair(false, null);
+            }
         }
-//
+
+
+
         ArrayList<String> rule3 = updateVariableDomainRule2(domainCopy, x, y);
-        if (rule3.size() == 0) {
-            return new Pair(false, null);
+        if (isEmpty(rule3)) {
+            return new Pair(false, true);
+//            return new Pair(false, null);
         }
 
         domainCopy.get(x).set(y, rule3);
-        
+
 
         return new Pair(true, domainCopy);
         
 
     }
 
+    public boolean hasVariable(ArrayList<String> domain) {
+
+        for (String s : domain) {
+            if (s.equals("w") || s.equals("b")) {
+                return true;
+            }
+        }
+        return false;
+    }
 
     public ArrayList<ArrayList<String>> copyBoard(ArrayList<ArrayList<String>> cBoard) {
         ArrayList<ArrayList<String>> res = new ArrayList<>();
@@ -431,12 +531,27 @@ public class Rules {
         return row;
     }
 
+    public ArrayList<String> getBRow(ArrayList<ArrayList<String>> board, int index) {
+        return board.get(index);
+    }
+
     public ArrayList<ArrayList<String>> getColumn(ArrayList<ArrayList<ArrayList<String>>> domain, int index) {
         ArrayList<ArrayList<String>> column = new ArrayList<>();
         int n = domain.size();
         for(int i=0 ; i<n ; i++){
             ArrayList<String> firstElement = getRow(domain ,i).get(index);
             column.add(firstElement);
+        }
+        return column;
+    }
+
+
+    public ArrayList<String> getBColumn(ArrayList<ArrayList<String>> board, int index){
+        ArrayList<String> column = new ArrayList<>();
+        int n = board.size();
+        for(int i=0 ; i<n ; i++){
+            ArrayList<String> firstElement = getBRow(board ,i);
+            column.add(firstElement.get(index));
         }
         return column;
     }
@@ -455,6 +570,8 @@ public class Rules {
         return count;
 
     }
+
+
 
     
     
