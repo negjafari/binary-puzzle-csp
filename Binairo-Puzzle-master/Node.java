@@ -5,10 +5,13 @@ public class Node {
     private int x;
     private int y;
 
+    private boolean hasBoard;
+
 
     public Node(Node parent){
         this.parent = parent;
     }
+
 
 
     public Node(Node parent, State state){

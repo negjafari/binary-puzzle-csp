@@ -76,11 +76,14 @@ public class Propagation {
         Pair pair = new Pair(true);
 
         while(queue.size() > 0){
-            System.out.println("b " + queue);
-            Node var = queue.poll();
-            pair = addNeighbors(domainCopy, var, queue);
             System.out.println("a " + queue);
-            domainCopy = rules.copyDomain(pair.domain());
+            Node var = queue.remove();
+            pair = addNeighbors(domainCopy, var, queue);
+            System.out.println("b " + queue);
+            System.out.println();
+            if(pair.domain()!=null){
+                domainCopy = rules.copyDomain(pair.domain());
+            }
             if(!pair.flag()){
                 break;
             }
@@ -89,7 +92,7 @@ public class Propagation {
             return new Pair(true, domainCopy);
         }
         else {
-            return new Pair(false, null);
+            return new Pair(false, true);
         }
     }
 
@@ -100,8 +103,9 @@ public class Propagation {
         int y = node.getY();
         ArrayList<ArrayList<ArrayList<String>>> domainCopy = rules.copyDomain(domain);
 
+
         if(x>=1) {
-            ArrayList<String> beChecked = domainCopy.get(x-1).get(y);
+            ArrayList<String> beChecked = domain.get(x-1).get(y);
 
             if(!hasVariable(beChecked,"W") && !hasVariable(beChecked,"B")){
                 Pair pair = domain_changed(domain, new Node(x-1,y));
@@ -109,8 +113,8 @@ public class Propagation {
                 if(pair.flag()){
                     queue.add(new Node(x-1,y));
                 }
-                if (!pair.flag() && pair.domain()==null){
-                    return new Pair(false, null);
+                if (!pair.flag() && pair.isDomainNull()){
+                    return pair;
                 }
             }
         }
@@ -125,8 +129,8 @@ public class Propagation {
                 if(pair.flag()){
                     queue.add(new Node(x-2,y));
                 }
-                if (!pair.flag() && pair.domain()==null){
-                    return new Pair(false, null);
+                if (!pair.flag() && pair.isDomainNull()){
+                    return pair;
                 }
             }
         }
@@ -140,8 +144,8 @@ public class Propagation {
                 if(pair.flag()){
                     queue.add(new Node(x+1,y));
                 }
-                if(!pair.flag() && pair.domain()==null){
-                    return new Pair(false,null);
+                if(!pair.flag() && pair.isDomainNull()){
+                    return pair;
                 }
             }
         }
@@ -155,8 +159,8 @@ public class Propagation {
                 if(pair.flag()){
                     queue.add(new Node(x+2,y));
                 }
-                if(!pair.flag() && pair.domain()==null){
-                    return new Pair(false,null);
+                if(!pair.flag() && pair.isDomainNull()){
+                    return pair;
                 }
             }
         }
@@ -172,8 +176,8 @@ public class Propagation {
                 if(pair.flag()){
                     queue.add(new Node(x,y-1));
                 }
-                if(!pair.flag() && pair.domain()==null){
-                    return new Pair(false,null);
+                if(!pair.flag() && pair.isDomainNull()){
+                    return pair;
                 }
             }
         }
@@ -187,8 +191,8 @@ public class Propagation {
                 if(pair.flag()){
                     queue.add(new Node(x,y-2));
                 }
-                if(!pair.flag() && pair.domain()==null){
-                    return new Pair(false,null);
+                if(!pair.flag() && pair.isDomainNull()){
+                    return pair;
                 }
             }
         }
@@ -202,8 +206,8 @@ public class Propagation {
                 if(pair.flag()){
                     queue.add(new Node(x,y+1));
                 }
-                if(!pair.flag() && pair.domain()==null){
-                    return new Pair(false,null);
+                if(!pair.flag() && pair.isDomainNull()){
+                    return pair;
                 }
             }
         }
@@ -218,8 +222,8 @@ public class Propagation {
                 if(pair.flag()){
                     queue.add(new Node(x,y+2));
                 }
-                if(!pair.flag() && pair.domain()==null){
-                    return new Pair(false,null);
+                if(!pair.flag() && pair.isDomainNull()){
+                    return pair;
                 }
             }
         }
@@ -234,12 +238,14 @@ public class Propagation {
         int x = node.getX();
         int y = node.getY();
         ArrayList<String> nodeDomainBefore = domain.get(x).get(y);
+//        System.out.println("be " + nodeDomainBefore);
         ArrayList<String> nodeDomainAfter ;
 
         Pair pair = rules.updateVariableDomain(domain,x,y);
         if(pair.flag()){
             nodeDomainAfter = pair.domain().get(x).get(y);
-            if(nodeDomainBefore.equals(nodeDomainAfter)) {
+//            System.out.println("af " + nodeDomainAfter);
+            if(!nodeDomainBefore.equals(nodeDomainAfter)) {
                 return new Pair(true, pair.domain());
             }
             else{
@@ -247,7 +253,7 @@ public class Propagation {
             }
         }
         else{
-            return new Pair(false, null);
+            return new Pair(false, true);
         }
     }
 

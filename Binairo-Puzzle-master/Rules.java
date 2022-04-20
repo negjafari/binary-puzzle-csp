@@ -136,6 +136,9 @@ public class Rules {
         
 
     public boolean isFinished(State state) {
+//        if(allAssigned(state) && !checkIfUnique(state)){
+//            System.out.println("here you mother fucker");
+//        }
         return allAssigned(state) && checkNumberOfCircles(state) && checkIfUnique(state) && checkAdjacency2(state);
     }
 
@@ -442,29 +445,45 @@ public class Rules {
         ArrayList<String> nodeDomain = domainCopy.get(x).get(y);
         boolean isFixed = hasVariable(nodeDomain);
 
-        if(!isFixed){
-            Pair rule1 = updateVariableDomainRule1(domainCopy, x, y);
-            if (!rule1.flag()){
-                return new Pair(false, true);
-//                return new Pair(false, null);
-            }
 
-            domainCopy.get(x).set(y, rule1.getVariableDomain());
+        Pair rule1 = updateVariableDomainRule1(domainCopy, x, y);
+        if (!rule1.flag()){
+            System.out.println("!!! Breaking the rule 1 !!!" + x + y);
+            return new Pair(false, true);
+        }
+
+        domainCopy.get(x).set(y, rule1.getVariableDomain());
+
+
+        boolean rule2 = updateVariableDomainRule3(domainCopy);
+        if(!rule2) {
+            System.out.println("!!! Breaking the rule 3 !!!" + x + y);
+            return new Pair(false, true);
         }
 
 
-        if (!isFixed){
-            boolean rule2 = updateVariableDomainRule3(domainCopy);
-            if(!rule2) {
-                return new Pair(false, true);
-//                return new Pair(false, null);
-            }
-        }
+//        if(!isFixed){
+//            Pair rule1 = updateVariableDomainRule1(domainCopy, x, y);
+//            if (!rule1.flag()){
+//                return new Pair(false, true);
+//            }
+//
+//            domainCopy.get(x).set(y, rule1.getVariableDomain());
+//        }
+
+
+//        if (!isFixed){
+//            boolean rule2 = updateVariableDomainRule3(domainCopy);
+//            if(!rule2) {
+//                return new Pair(false, true);
+//            }
+//        }
 
 
 
         ArrayList<String> rule3 = updateVariableDomainRule2(domainCopy, x, y);
         if (isEmpty(rule3)) {
+            System.out.println("!!! Breaking the rule 2 !!!" + x + y);
             return new Pair(false, true);
 //            return new Pair(false, null);
         }
