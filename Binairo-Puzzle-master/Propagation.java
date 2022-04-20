@@ -34,17 +34,6 @@ public class Propagation {
                         break;
                     }
 
-//                if(!hasVariable(nodeDomain)){
-//                    x = i;
-//                    y = j;
-//                    pair = rules.updateVariableDomain(domainCopy, x, y);
-//                    if(pair.flag()) {
-//                        domainCopy = pair.domain();
-//                    }
-//                    else{
-//                        break;
-//                    }
-//                }
             }
             if (!pair.flag()) break;
         }
@@ -58,15 +47,7 @@ public class Propagation {
 
     }
 
-    public boolean hasVariable(ArrayList<String> domain) {
 
-        for (String s : domain) {
-            if (s.equals("w") || s.equals("b")) {
-                return true;
-            }
-        }
-        return false;
-    }
 
 
     public Pair AC3(ArrayList<ArrayList<ArrayList<String>>> domain, Node variable){
@@ -76,17 +57,13 @@ public class Propagation {
         Pair pair = new Pair(true);
 
         while(queue.size() > 0){
-            System.out.println("a " + queue);
-            Node var = queue.remove();
+            Node var = queue.poll();
             pair = addNeighbors(domainCopy, var, queue);
-            System.out.println("b " + queue);
-            System.out.println();
-            if(pair.domain()!=null){
-                domainCopy = rules.copyDomain(pair.domain());
-            }
+
             if(!pair.flag()){
                 break;
             }
+            domainCopy = rules.copyDomain(pair.domain());
         }
         if(pair.flag()) {
             return new Pair(true, domainCopy);
@@ -108,10 +85,11 @@ public class Propagation {
             ArrayList<String> beChecked = domain.get(x-1).get(y);
 
             if(!hasVariable(beChecked,"W") && !hasVariable(beChecked,"B")){
-                Pair pair = domain_changed(domain, new Node(x-1,y));
+                Node newNode = new Node(x-1, y);
+                Pair pair = domain_changed(domain, newNode);
                 domainCopy = pair.domain();
                 if(pair.flag()){
-                    queue.add(new Node(x-1,y));
+                    queue.add(newNode);
                 }
                 if (!pair.flag() && pair.isDomainNull()){
                     return pair;
@@ -124,7 +102,8 @@ public class Propagation {
             ArrayList<String> beChecked = domain.get(x-2).get(y);
 
             if(!hasVariable(beChecked,"W") && !hasVariable(beChecked,"B")){
-                Pair pair = domain_changed(domain, new Node(x-2, y));
+                Node newNode = new Node(x-2,y);
+                Pair pair = domain_changed(domain, newNode);
                 domainCopy = pair.domain();
                 if(pair.flag()){
                     queue.add(new Node(x-2,y));
@@ -139,7 +118,8 @@ public class Propagation {
             ArrayList<String> beChecked = domain.get(x+1).get(y);
 
             if(!hasVariable(beChecked,"W") && !hasVariable(beChecked,"B")){
-                Pair pair = domain_changed(domainCopy, new Node(x+1,y));
+                Node newNode = new Node(x+1,y);
+                Pair pair = domain_changed(domainCopy,newNode);
                 domainCopy = pair.domain();
                 if(pair.flag()){
                     queue.add(new Node(x+1,y));
@@ -154,6 +134,7 @@ public class Propagation {
             ArrayList<String> beChecked = domain.get(x+2).get(y);
 
             if(!hasVariable(beChecked,"W") && !hasVariable(beChecked,"B")){
+
                 Pair pair = domain_changed(domainCopy, new Node(x+2,y));
                 domainCopy = pair.domain();
                 if(pair.flag()){
@@ -171,7 +152,8 @@ public class Propagation {
             ArrayList<String> beChecked = domain.get(x).get(y-1);
 
             if(!hasVariable(beChecked,"W") && !hasVariable(beChecked,"B")){
-                Pair pair = domain_changed(domainCopy, new Node(x,y-1));
+                Node newNode = new Node(x,y-1);
+                Pair pair = domain_changed(domainCopy, newNode);
                 domainCopy = pair.domain();
                 if(pair.flag()){
                     queue.add(new Node(x,y-1));
@@ -186,7 +168,8 @@ public class Propagation {
             ArrayList<String> beChecked = domain.get(x).get(y-2);
 
             if(!hasVariable(beChecked,"W") && !hasVariable(beChecked,"B")){
-                Pair pair = domain_changed(domainCopy, new Node(x,y-2));
+                Node newNode = new Node(x,y-2);
+                Pair pair = domain_changed(domainCopy, newNode);
                 domainCopy = pair.domain();
                 if(pair.flag()){
                     queue.add(new Node(x,y-2));
@@ -238,21 +221,22 @@ public class Propagation {
         int x = node.getX();
         int y = node.getY();
         ArrayList<String> nodeDomainBefore = domain.get(x).get(y);
-//        System.out.println("be " + nodeDomainBefore);
         ArrayList<String> nodeDomainAfter ;
 
         Pair pair = rules.updateVariableDomain(domain,x,y);
         if(pair.flag()){
             nodeDomainAfter = pair.domain().get(x).get(y);
-//            System.out.println("af " + nodeDomainAfter);
             if(!nodeDomainBefore.equals(nodeDomainAfter)) {
+                // add node to queue
                 return new Pair(true, pair.domain());
             }
             else{
+                // don't add to queue
                 return new Pair(false, pair.domain());
             }
         }
         else{
+            // empty domain backtrack
             return new Pair(false, true);
         }
     }
@@ -265,6 +249,7 @@ public class Propagation {
         }
         return false;
     }
+
 
 
 

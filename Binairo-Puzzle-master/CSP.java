@@ -20,7 +20,6 @@ public class CSP {
 
 
     public void csp() {
-//        Node base = new Node(false);
         Node start = new Node(new Node(null), this.state);
         backtracking(start, "start");
 
@@ -35,7 +34,7 @@ public class CSP {
 
         boolean finished = rules.isFinished(node.getState());
         if (finished) {
-            System.out.println("puzzle solved");
+            System.out.println("PUZZLE SOLVED");
             printB(node.getState().getBoard());
             System.out.println();
             return;
@@ -46,7 +45,7 @@ public class CSP {
 
 
         if (!empty) {
-            System.out.println("backtracking ...");
+            System.out.println("BACKTRACKING ...");
             backtracking(node.getParent(), "continue");
         }
 
@@ -61,7 +60,7 @@ public class CSP {
             ArrayList<ArrayList<String>> boardCopy = rules.copyBoard(node.getState().getBoard());
             boardCopy.get(x).set(y, node.getValue().toUpperCase());
 
-            System.out.println("mvr selected " + node + " with value " + node.getValue());
+            System.out.println("NODE : " + node + "SELECTED WITH VALUE : " + node.getValue());
             printB(node.getState().getBoard());
             System.out.println();
 
@@ -71,19 +70,19 @@ public class CSP {
 
 
             if (pair.flag()) {
-                System.out.println("continue solving puzzle ");
+                System.out.println("CONTINUE SOLVING ");
                 Node child = new Node(node, new State(boardCopy, pair.domain()));
                 backtracking(child, "continue");
             }
 
             else if(!pair.flag() && (pair.isDomainNull())) {
-                System.out.println("empty domain , backtracking ");
+                System.out.println("BACKTRACKING (EMPTY DOMAIN) ");
                 backtracking(node.getParent(), "backtracking");
             }
 
             else {
-                System.out.println("Change last assigned variable value");
-                backtracking(node, "samevar");
+                System.out.println("LAST VALUE ASSIGNED HAD CONFLICT");
+                backtracking(node, "same");
             }
 
         }
@@ -92,31 +91,13 @@ public class CSP {
     }
 
     public boolean IsSolvable(Node node){
-//        if(node.hasBoard()){
-//            System.out.println("unsolvable");
-//            return false;
-//        }
-
-        if(node.getState().getBoard() == null) {
+        if(node.getState() == null) {
             System.out.println("unsolvable");
             return false;
         }
         return true;
     }
 
-
-
-    public void printD(ArrayList<ArrayList<ArrayList<String>>> domainCopy){
-        int n = domainCopy.size();
-        for(int i=0 ; i<n ; i++) {
-            for(int j=0; j<n ; j++) {
-                ArrayList<String> domain = domainCopy.get(i).get(j);
-                System.out.print(domain);
-            }
-            System.out.println();
-        }
-
-    }
 
     public void printB(ArrayList<ArrayList<String>> board) {
         int n = board.size();

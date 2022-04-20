@@ -91,7 +91,7 @@ public class Heuristic {
 
 
     public boolean MVR(Node node, String mode) {
-        if (mode.equals("samevar")) {
+        if (mode.equals("same")) {
             String value = hasVariable(node.getValue(), node.getState().getDomain().get(node.getX()).get(node.getY()));
             if(value.equals("0")) { //domain is empty
                 return false;
